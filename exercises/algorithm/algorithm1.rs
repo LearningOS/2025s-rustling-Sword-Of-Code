@@ -69,9 +69,21 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self
 	{
 		//TODO
+        let a_ptr = list_a.start;
+        let b_ptr = list_b.start;
+        let res_start: Option<NonNull<Node<T>>> = None;
+        let res_end: Option<NonNull<Node<T>>> = None;
+        let res_length = 0;
+        loop {
+            match (a_ptr, b_ptr) {
+                (Some(aptr), Some(bptr)) => {
+                    if unsafe { *aptr.as_ptr().val }
+                } 
+            }
+        }
 		Self {
             length: 0,
             start: None,
