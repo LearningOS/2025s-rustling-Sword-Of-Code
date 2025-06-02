@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -51,12 +50,52 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        let new_node = Box::new(TreeNode::new(value));
+        match &mut self.root {
+            Some(tmp) => {
+                if tmp.value == new_node.value {
+                } else if tmp.value < new_node.value {
+                    if tmp.left.is_none() {
+                        tmp.left = Some(new_node);
+                    } else if let Some(tmp_left) = &mut tmp.left {
+                        tmp_left.insert(new_node.value);
+                    }
+                } else {
+                    if tmp.right.is_none() {
+                        tmp.right = Some(new_node);
+                    } else if let Some(tmp_right) = &mut tmp.right {
+                        tmp_right.insert(new_node.value);
+                    }
+                }
+            }
+            None => {
+                self.root = Some(new_node);
+            }
+        }
+
+        return ();
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        if self.root.is_none() {
+            return false;
+        } else if let Some(tmp) = &self.root {
+            if tmp.value == value {
+                return true;
+            } else if tmp.value < value {
+                if let Some(tmp_left) = &tmp.left {
+                    return tmp_left.search(value);
+                }
+            } else {
+                if let Some(tmp_right) = &tmp.right {
+                    return tmp_right.search(value);
+                }
+            }
+        }
+
+        return false;
     }
 }
 
@@ -66,7 +105,36 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        let new_node = Box::new(TreeNode::new(value));
+        if self.value < new_node.value {
+            if self.left.is_none() {
+                self.left = Some(new_node);
+            } else if let Some(tmp_left) = &mut self.left {
+                tmp_left.insert(new_node.value);
+            }
+        } else {
+            if self.right.is_none() {
+                self.right = Some(new_node);
+            } else if let Some(tmp_right) = &mut self.right {
+                tmp_right.insert(new_node.value);
+            }
+        }
+    }
+
+    fn search(&self, value: T) -> bool {
+        if self.value == value {
+            return true;
+        } else if self.value < value {
+            if let Some(tmp_left) = &self.left {
+                return tmp_left.search(value);
+            }
+        } else {
+            if let Some(tmp_right) = &self.right {
+                return tmp_right.search(value);
+            }
+        }
+
+        return false;
     }
 }
 
@@ -89,6 +157,9 @@ mod tests {
         bst.insert(2);
         bst.insert(4);
 
+        if let Some(tmp) = &bst.root {
+            println!("bst = {:#?}", tmp);
+        }
         
         assert_eq!(bst.search(5), true);
         assert_eq!(bst.search(3), true);

@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -14,7 +13,7 @@ struct Node<T> {
     next: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Node<T> {
+impl<T: PartialOrd + Clone> Node<T> {
     fn new(t: T) -> Node<T> {
         Node {
             val: t,
@@ -29,13 +28,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,22 +71,42 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self
 	{
 		//TODO
-        let a_ptr = list_a.start;
-        let b_ptr = list_b.start;
-        let res_start: Option<NonNull<Node<T>>> = None;
-        let res_end: Option<NonNull<Node<T>>> = None;
-        let res_length = 0;
+        let mut a_ptr = list_a.start;
+        let mut b_ptr = list_b.start;
+        let mut res = LinkedList::new();
         loop {
             match (a_ptr, b_ptr) {
-                (Some(aptr), Some(bptr)) => {
-                    if unsafe { *aptr.as_ptr().val }
-                } 
+                (Some(a), Some(b)) => {
+                    unsafe {
+                        if (*a.as_ptr()).val > (*b.as_ptr()).val {
+                            res.add((*b.as_ptr()).val.clone());
+                            b_ptr = (*b.as_ptr()).next;
+                        } else {
+                            res.add((*a.as_ptr()).val.clone());
+                            a_ptr = (*a.as_ptr()).next;
+                        }
+                    }
+                },
+                (Some(a), None) => {
+                    unsafe {
+                        res.add((*a.as_ptr()).val.clone());
+                        a_ptr = (*a.as_ptr()).next;
+                    }
+                },
+                (None, Some(b)) => {
+                    unsafe {
+                        res.add((*b.as_ptr()).val.clone());
+                        b_ptr = (*b.as_ptr()).next;
+                    }
+                },
+                (_, _) => break,
             }
         }
+
 		Self {
-            length: 0,
-            start: None,
-            end: None,
+            length: list_a.length + list_b.length,
+            start: res.start,
+            end: res.end,
         }
 	}
 }

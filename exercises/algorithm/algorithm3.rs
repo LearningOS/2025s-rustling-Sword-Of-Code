@@ -3,10 +3,18 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
+fn sort<T: PartialOrd + Clone>(array: &mut [T]) {
 	//TODO
+    for index1 in 0..array.len() {
+        for index2 in 0..array.len() - 1 - index1 {
+            if array[index2] > array[index2 + 1] {
+                let tmp = array[index2].clone();
+                array[index2] = array[index2 + 1].clone();
+                array[index2 + 1] = tmp.clone();
+            }
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

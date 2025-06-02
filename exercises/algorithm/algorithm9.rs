@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -23,7 +22,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: vec![],
             comparator,
         }
     }
@@ -38,6 +37,24 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.sift_up(self.count - 1);
+    }
+
+    pub fn sift_up(&mut self, mut index: usize) {
+        if index == 0 {
+            return ();
+        }
+        let mut parent = (index - 1) / 2;
+        while index > 0 && (self.comparator)(&self.items[index], &self.items[parent]) {
+            self.items.swap(index, parent);
+            index = parent;
+            if index == 0 {
+                break;
+            }
+            parent = (index - 1) / 2;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -85,7 +102,26 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.len() == 0 {
+            return None;
+        }
+        let res = self.items.remove(0);
+        self.count = self.count - 1;
+        if self.count == 0 || self.count == 1 {
+            return Some(res);
+        }
+        let mut index = self.count - 1;
+        let mut parent = (index - 1) / 2;
+        while index > 0 && (self.comparator)(&self.items[index], &self.items[parent]) {
+            self.items.swap(index, parent);
+            index = parent;
+            if index == 0 {
+                break;
+            }
+            parent = (index - 1) / 2;
+        }
+
+        Some(res)
     }
 }
 
